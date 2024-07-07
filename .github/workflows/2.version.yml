@@ -24,13 +24,24 @@ jobs:
 
   version:
     needs: [ test ]
-    name: Version
+    name: Bump version
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: phips28/gh-action-bump-version@master
+        name: Bump JSR version
+        env:
+          PACKAGE_FILENAME: jsr.json
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          skip-tag: true
+          skip-push: true
+      - uses: phips28/gh-action-bump-version@master
+        name: Bump NPM version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag-prefix:  'v'
+          tag-prefix: v
